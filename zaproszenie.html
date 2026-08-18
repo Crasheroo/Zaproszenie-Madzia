@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaproszenie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #fff5f9, #fbb6d9);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #fff5f9, #fbb6d9);
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 0 10px 40px rgba(217, 70, 166, 0.15);
+        }
+
+        .screen {
+            display: none;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: block !important;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Ekran 1: Zaproszenie */
+        .screen1 {
+            padding: 40px 20px;
+        }
+
+        .emoji-big {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #d946a6;
+            margin-bottom: 30px;
+            line-height: 1.3;
+        }
+
+        .emoji-decoration {
+            font-size: 40px;
+            margin-bottom: 40px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn-yes {
+            padding: 16px 48px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #f973b1, #d946a6);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(217, 70, 166, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(217, 70, 166, 0.4);
+        }
+
+        .btn-yes:active {
+            transform: scale(0.98);
+        }
+
+        .btn-no {
+            padding: 16px 48px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #d946a6;
+            background: #fff5f9;
+            border: 2px solid #f5b6d9;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.1s ease-out;
+            position: relative;
+        }
+
+        .btn-no:active {
+            transform: scale(0.95);
+        }
+
+        /* Ekran 2: Kalendarz */
+        .screen2 {
+            padding: 40px 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #d946a6;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #c084fc;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .calendar {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            color: #c084fc;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+        }
+
+        .calendar-day button {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #f5d3e1;
+            border-radius: 12px;
+            background: #fff5f9;
+            color: #d946a6;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(249, 115, 145, 0.2);
+        }
+
+        .calendar-day button.selected {
+            border: 3px solid #f097a7;
+            background: linear-gradient(135deg, #f5d3e1, #fbb6d9);
+        }
+
+        /* Ekran 3: Aktywności */
+        .screen3 {
+            padding: 40px 20px;
+        }
+
+        .activities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #fff;
+            border: 2px solid #f5d3e1;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .activity-item:hover {
+            background: #fff5f9;
+            transform: scale(1.02);
+        }
+
+        .activity-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #d946a6;
+        }
+
+        .activity-item.checked {
+            border: 2px solid #f973b1;
+            background: #fff5f9;
+        }
+
+        .activity-text {
+            font-size: 16px;
+            color: #4a1728;
+            font-weight: 500;
+        }
+
+        /* Ekran 4: Podziękowania */
+        .screen4 {
+            padding: 40px 20px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .emoji-pulse {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .final-emoji {
+            font-size: 40px;
+            margin-bottom: 30px;
+        }
+
+        .final-text {
+            font-size: 18px;
+            color: #c084fc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Przyciski */
+        .btn-confirm {
+            width: 100%;
+            padding: 14px;
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #f973b1, #d946a6);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(217, 70, 166, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(217, 70, 166, 0.4);
+        }
+
+        .btn-confirm:disabled {
+            background: #f0f0f0;
+            color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-confirm:disabled:hover {
+            transform: scale(1);
+        }
+
+        .btn-small {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #f973b1, #d946a6);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(217, 70, 166, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+
+        .btn-small:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(217, 70, 166, 0.4);
+        }
+
+        .btn-small:active {
+            transform: scale(0.98);
+        }
+
+        .btn-small {
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+
+        .nights-selector {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f5d3e1;
+        }
+
+        .nights-label {
+            font-size: 16px;
+            color: #d946a6;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .nights-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nights-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #f973b1;
+            background: #fff;
+            color: #d946a6;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nights-btn:hover {
+            background: #fff5f9;
+            transform: scale(1.1);
+        }
+
+        .nights-btn:active {
+            transform: scale(0.95);
+        }
+
+        .nights-display {
+            font-size: 18px;
+            color: #4a1728;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Ekran 1: Zaproszenie -->
+        <div class="screen screen1 active">
+            <div class="emoji-big">🌸 🐕 🌺</div>
+            <h1>Hej Madzia,<br/>czy chciałabyś się ze mną umówić na nocowankę?</h1>
+            <div class="emoji-decoration">🌼🌻🐌🌷</div>
+            
+            <div class="button-group">
+                <button class="btn-yes" onclick="goToScreen(2)">Tak 🐕</button>
+                <button class="btn-no" id="noBtn" onmousemove="moveNoButton(event)">Nie</button>
+            </div>
+        </div>
+
+        <!-- Ekran 2: Kalendarz -->
+        <div class="screen screen2" style="display: none;">
+            <h2>Wybierz dzień 🌸</h2>
+            <p class="subtitle">Kiedy będzie Ci wygodnie?</p>
+            
+            <div class="calendar">
+                <div class="calendar-header">
+                    <div class="day-header">Pon</div>
+                    <div class="day-header">Wto</div>
+                    <div class="day-header">Śro</div>
+                    <div class="day-header">Czw</div>
+                    <div class="day-header">Pią</div>
+                    <div class="day-header">Sob</div>
+                    <div class="day-header">Nie</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+
+            <div class="nights-selector" id="nightsSelector" style="display: none;">
+                <p class="nights-label">Na ile nocy? 🌙</p>
+                <div class="nights-controls">
+                    <button class="nights-btn" onclick="changeNights(-1)">−</button>
+                    <div class="nights-display" id="nightsDisplay">1 noc</div>
+                    <button class="nights-btn" onclick="changeNights(1)">+</button>
+                </div>
+            </div>
+
+            <button class="btn-confirm" id="btnConfirmDate" onclick="goToScreen(3)" disabled>Dalej 🌻</button>
+        </div>
+
+        <!-- Ekran 3: Aktywności -->
+        <div class="screen screen3" style="display: none;">
+            <h2>Super misiunia! 🐶</h2>
+            <p class="subtitle">Teraz wybierz co chcesz robić (możesz wybrać kilka)</p>
+
+            <div class="activities-list" id="activitiesList"></div>
+
+            <button class="btn-small" onclick="goToScreen(2)">Zmień datę</button>
+
+            <button class="btn-confirm" onclick="goToScreen(4)">Wysyłaj! 🌸</button>
+        </div>
+
+        <!-- Ekran 4: Podziękowania z podsumowaniem -->
+        <div class="screen screen4" style="display: none;">
+            <div class="emoji-pulse">🌸 🐕 🌸</div>
+            <h1>Dziękuję Madzia! 🐌</h1>
+            
+            <div style="background: #fff5f9; border-radius: 16px; padding: 20px; margin: 20px 0; text-align: left;">
+                <p style="margin: 12px 0; font-size: 16px; color: #4a1728;">
+                    <strong>Kiedy:</strong> <span id="summaryDate">-</span>
+                </p>
+                <p style="margin: 12px 0; font-size: 16px; color: #4a1728;">
+                    <strong>Na ile nocy:</strong> <span id="summaryNights">-</span>
+                </p>
+                <p style="margin: 12px 0; font-size: 16px; color: #4a1728;">
+                    <strong>Mega ciekawe atrakcje:</strong>
+                </p>
+                <ul id="summaryActivities" style="margin-left: 20px; color: #4a1728;">
+                </ul>
+            </div>
+
+            <p class="final-text" id="finalText">
+                POLSKA GUROOOOM, widzimy się!<br/>
+                Zaraz idę przyspieszać czas! 🌺
+            </p>
+            <div class="final-emoji">🌼 🐕 🌻 🐕 🌼</div>
+            <p style="color: #c084fc; margin-bottom: 20px; font-size: 14px;">Rób skrina i mi go wyślij prośba 📸</p>
+            <button class="btn-small" onclick="restartForm()">Od nowa<br>(Jak ci sie coś tam po drodze zmieniło)</button>
+        </div>
+
+    <script>
+        const activities = [
+            'Filmowy maraton w domu',
+            'Filmowy maraton w kinie',
+            'Jedzenie po wspólnym gotowaniu',
+            'Restauracja',
+            'Granie w gry',
+            'Granie w planszówki',
+            'Spacer',
+            'Trening wspólny',
+            'Masaż (dla ciebie ode mnie)',
+            'Przytulanie i buziaczkowanie',
+            'Piknik (poprawa ostatniego)'
+        ];
+
+        let selectedDate = null;
+        let selectedActivities = [];
+        let numberOfNights = 1;
+        let currentScreen = 0;
+
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCalendar();
+            generateActivities();
+        });
+
+        function generateCalendar() {
+            const now = new Date();
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            // Puste dni na początku
+            for (let i = 0; i < firstDay; i++) {
+                calendarGrid.appendChild(document.createElement('div'));
+            }
+
+            // Dni miesiąca
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                const btn = document.createElement('button');
+                btn.textContent = day;
+                btn.onclick = () => selectDate(day, btn);
+                dayDiv.appendChild(btn);
+                calendarGrid.appendChild(dayDiv);
+            }
+        }
+
+        function selectDate(day, btn) {
+            // Usuń poprzednie zaznaczenie
+            document.querySelectorAll('.calendar-day button.selected').forEach(b => {
+                b.classList.remove('selected');
+            });
+
+            // Dodaj nowe zaznaczenie
+            selectedDate = day;
+            btn.classList.add('selected');
+            document.getElementById('btnConfirmDate').disabled = false;
+            
+            // Pokaż licznik nocy
+            document.getElementById('nightsSelector').style.display = 'block';
+        }
+
+        function changeNights(change) {
+            numberOfNights += change;
+            
+            // Minimum 1 noc
+            if (numberOfNights < 1) {
+                numberOfNights = 1;
+            }
+            
+            // Maximum 7 nocy (opcjonalne)
+            if (numberOfNights > 7) {
+                numberOfNights = 7;
+            }
+            
+            updateNightsDisplay();
+        }
+
+        function updateNightsDisplay() {
+            const display = document.getElementById('nightsDisplay');
+            if (numberOfNights === 1) {
+                display.textContent = '1 noc';
+            } else if (numberOfNights === 2) {
+                display.textContent = '2 noce';
+            } else if (numberOfNights >= 3 && numberOfNights <= 4) {
+                display.textContent = numberOfNights + ' noce';
+            } else {
+                display.textContent = numberOfNights + ' nocy';
+            }
+        }
+
+        function generateActivities() {
+            const list = document.getElementById('activitiesList');
+            list.innerHTML = '';
+
+            activities.forEach((activity, index) => {
+                const label = document.createElement('label');
+                label.className = 'activity-item';
+                
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.value = index;
+                input.onchange = (e) => {
+                    if (e.target.checked) {
+                        selectedActivities.push(activity);
+                        label.classList.add('checked');
+                    } else {
+                        selectedActivities = selectedActivities.filter(a => a !== activity);
+                        label.classList.remove('checked');
+                    }
+                };
+
+                const span = document.createElement('span');
+                span.className = 'activity-text';
+                span.textContent = activity;
+
+                label.appendChild(input);
+                label.appendChild(span);
+                list.appendChild(label);
+            });
+        }
+
+        function moveNoButton(event) {
+            const btn = document.getElementById('noBtn');
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
+            const distance = 120;
+
+            const newX = Math.cos(angle + Math.PI) * distance;
+            const newY = Math.sin(angle + Math.PI) * distance;
+
+            btn.style.transform = `translate(${newX}px, ${newY}px)`;
+        }
+
+        function goToScreen(screenNumber) {
+            // Ukryj wszystkie ekrany i usuń klasę active
+            document.querySelectorAll('.screen').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('active');
+            });
+
+            // Pokaż wybrany ekran
+            const screenClass = `.screen${screenNumber}`;
+            const screen = document.querySelector(screenClass);
+            if (screen) {
+                screen.style.display = 'block';
+                screen.classList.add('active');
+            }
+
+            currentScreen = screenNumber;
+
+            // Podsumowanie na ekranie 4
+            if (screenNumber === 4) {
+                document.getElementById('summaryDate').textContent = selectedDate ? `${selectedDate} ${getMonthName()}` : '-';
+                
+                // Wyświetl liczbę nocy
+                if (numberOfNights === 1) {
+                    document.getElementById('summaryNights').textContent = '1 noc';
+                } else if (numberOfNights === 2) {
+                    document.getElementById('summaryNights').textContent = '2 noce';
+                } else if (numberOfNights >= 3 && numberOfNights <= 4) {
+                    document.getElementById('summaryNights').textContent = numberOfNights + ' noce';
+                } else {
+                    document.getElementById('summaryNights').textContent = numberOfNights + ' nocy';
+                }
+                
+                const activitiesList = document.getElementById('summaryActivities');
+                activitiesList.innerHTML = '';
+                if (selectedActivities.length > 0) {
+                    selectedActivities.forEach(activity => {
+                        const li = document.createElement('li');
+                        li.textContent = activity;
+                        li.style.marginBottom = '8px';
+                        activitiesList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'Zaskocz mnie';
+                    activitiesList.appendChild(li);
+                }
+
+                const finalText = document.getElementById('finalText');
+                const dateText = selectedDate ? `${selectedDate} ${getMonthName()}` : '';
+                finalText.innerHTML = `POLSKA GUROOOOOOOM,<br>zaczynam przyspieszać czas do ${dateText}! 🌺`;
+            }
+
+            // Przewiń do góry
+            window.scrollTo(0, 0);
+        }
+
+        function getMonthName() {
+            const now = new Date();
+            const months = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 
+                          'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+            return months[now.getMonth()];
+        }
+
+        function restartForm() {
+            selectedDate = null;
+            selectedActivities = [];
+            numberOfNights = 1;
+            document.querySelectorAll('.calendar-day button.selected').forEach(b => {
+                b.classList.remove('selected');
+            });
+            document.querySelectorAll('.activity-item').forEach(item => {
+                item.classList.remove('checked');
+                item.querySelector('input').checked = false;
+            });
+            document.getElementById('btnConfirmDate').disabled = true;
+            document.getElementById('nightsSelector').style.display = 'none';
+            updateNightsDisplay();
+            goToScreen(1);
+        }
+    </script>
+</body>
+</html>
